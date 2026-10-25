@@ -24,4 +24,16 @@
 
 **Verification:** `node --check src/domain/inventory.js` completed without a syntax error. `npm run demo` demonstrated a sold-out booking refusal, waitlist order, cancellation, and identification of the next person in line. `npm run benchmark` showed much faster lookup using `Map.get()` than `Array.find()` in the tested data sizes. Additional assertions passed for failed-booking inventory integrity, booking-reference lookup, ticket release after cancellation, rejection of double cancellation, and FIFO queue order.
 
-**Remaining work:** Review the full Build 1 acceptance requirements, check all changed files, and confirm the final Git changes before committing.
+**Final review:** Reviewed event and ticket-tier validation, booking limits, inventory protection after failed bookings, booking-reference lookup, cancellation and double-cancellation protection, FIFO queue behavior, and the queue's O(1) operations by code inspection. The demo and benchmark ran successfully. The pull request was merged into `main`, and the local repository is clean.
+
+## Build 2 — Event search, sorting, and core tests
+
+**What I asked:** I used AI guidance to add event search, filtering, sorting, event publishing, ticket-tier validation, and automated tests while preserving the existing demo.
+
+**What came back:** A stable merge-sort implementation, event search and filtering, event creation and publishing functions, and Node.js tests.
+
+**What I changed:** Added `src/domain/sorting.js`, `src/domain/eventSearch.js`, `test/eventSearch.test.js`, and `test/inventory.test.js`; updated `src/domain/inventory.js` and `package.json`; documented the backlog in `docs/user-stories.md`.
+
+**Verification:** `npm test` passed 20 tests, and `npm run demo` completed successfully, demonstrating sold-out booking refusal, cancellation, and FIFO waitlist behavior.
+
+**Remaining review:** Confirm the three S04 acceptance criteria from class and verify that all class requirements are satisfied before submitting Build 2.
