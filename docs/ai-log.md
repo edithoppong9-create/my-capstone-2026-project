@@ -37,3 +37,13 @@
 **Verification:** `npm test` passed 20 tests, and `npm run demo` completed successfully, demonstrating sold-out booking refusal, cancellation, and FIFO waitlist behavior.
 
 **Remaining review:** Confirm the three S04 acceptance criteria from class and verify that all class requirements are satisfied before submitting Build 2.
+
+## Build 3 — Architecture, state machine, and HTTP server
+
+**What I asked:** I used AI guidance to implement the layered architecture, booking state machine, native HTTP server, router, and static file handling.
+
+**What came back:** Architecture documentation and diagrams, booking-state transition rules, a method-and-path router with route parameters, a native Node.js HTTP server, configuration, and automated tests.
+
+**What I changed:** Added `docs/architecture.md`, `src/domain/bookingStateMachine.js`, `src/http/router.js`, `src/http/app.js`, `src/config.js`, `src/server.js`, `public/index.html`, and Build 3 tests. Updated `package.json` with the start script.
+
+**Verification:** `npm test` passed 36 tests. `npm start` served the health endpoint and static homepage. Manual checks confirmed malformed JSON returns 400, unknown API routes return 404, and an encoded path-traversal attempt is blocked with 403. `git diff --check` reported no whitespace errors.
