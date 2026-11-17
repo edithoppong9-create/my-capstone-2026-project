@@ -1,10 +1,10 @@
-
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { createRouter } from './router.js';
+import { DomainError } from '../domain/errors.js';
 
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const publicDirectory = path.resolve(currentDirectory, '../../public');
@@ -34,6 +34,18 @@ function sendError(response, statusCode, code, message) {
     error: { code, message },
   });
 }
+
+const ERROR_STATUS = {
+  VALIDATION: 400,
+  INVALID_JSON: 400,
+  UNAUTHENTICATED: 401,
+  PAYMENT_DECLINED: 402,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  SOLD_OUT: 409,
+  INVALID_STATE: 409,
+  INVALID_TRANSITION: 409,
+};
 
 async function readJsonBody(request) {
   const chunks = [];
@@ -107,9 +119,7 @@ async function serveStaticFile(response, pathname) {
   }
 }
 
-export function createApp() {
-  const router = createRouter();
-
+export function createApp({ router = createRouter() } = {}) {
   router.get('/health', (_request, response) => {
     sendJson(response, 200, { status: 'ok' });
   });
@@ -118,16 +128,21 @@ export function createApp() {
     try {
       const url = new URL(request.url, 'http://localhost');
       const { pathname } = url;
+
       const isApiRequest =
         pathname === '/api' || pathname.startsWith('/api/');
+
 
         if (
           isApiRequest &&
           request.method !== 'GET' &&
           request.method !== 'HEAD'
         ) {
-          request.body = await readJsonBody(request);
-        }
+                  const hasBody =
+                  Number(request.headers['content-length'] || 0) > 0 ||
+                  Boolean(request.headers['transfer-encoding']);
+                   request.body = hasBody ? await readJsonBody(request) : {};
+          }
 
       const route = router.match(request.method, pathname);
 
@@ -136,7 +151,7 @@ export function createApp() {
         return;
       }
 
-      if (pathname.startsWith('/api/')) {
+      if (isApiRequest) {
         sendError(response, 404, 'NOT_FOUND', 'API route not found.');
         return;
       }
@@ -167,16 +182,36 @@ export function createApp() {
 
       await serveStaticFile(response, pathname);
     } catch (error) {
+      if (response.headersSent) {
+        response.destroy();
+        return;
+      }
+
+      if (error instanceof DomainError) {
+        const statusCode = ERROR_STATUS[error.code] ?? 500;
+
+        sendError(
+          response,
+          statusCode,
+          error.code,
+          statusCode === 500
+            ? 'An internal server error occurred.'
+            : error.message,
+        );
+        return;
+      }
+
       if (error.code === 'INVALID_JSON') {
         sendError(response, 400, 'INVALID_JSON', error.message);
         return;
       }
 
-      if (!response.headersSent) {
-        sendError(response, 500, 'INTERNAL_ERROR', 'An internal server error occurred.');
-      } else {
-        response.destroy();
-      }
+      sendError(
+        response,
+        500,
+        'INTERNAL_ERROR',
+        'An internal server error occurred.',
+      );
     }
   });
 }
