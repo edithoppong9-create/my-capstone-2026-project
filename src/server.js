@@ -2,7 +2,8 @@ import { createApp } from './http/app.js';
 import { createRouter } from './http/router.js';
 import { registerApiRoutes } from './http/routes.js';
 
-import { createMemoryRepository } from './repositories/memory.js';
+import { createDatabase } from './db/connection.js';
+import { createSQLiteRepository } from './repositories/sqlite.js';
 import { createMockPaymentGateway } from './lib/mockPaymentGateway.js';
 
 import { createEventService } from './services/eventService.js';
@@ -10,7 +11,8 @@ import { createBookingService } from './services/bookingService.js';
 
 import { config } from './config.js';
 
-const repository = createMemoryRepository();
+const db = createDatabase();
+const repository = createSQLiteRepository(db);
 const paymentGateway = createMockPaymentGateway();
 
 const eventService = createEventService(repository);

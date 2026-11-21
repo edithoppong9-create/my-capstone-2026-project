@@ -1,8 +1,6 @@
-import { assertTransition } from '../domain/bookingStateMachine.js';
 import { DomainError } from '../domain/errors.js';
 import { newId, newReference } from '../domain/ids.js';
 import {
-  assertSeatsAvailable,
   requireQuantity,
   requireText,
 } from '../domain/validation.js';
@@ -44,16 +42,12 @@ export function createBookingService(repository, paymentGateway) {
       if (!tier || tier.eventId !== event.id) {
         throw new DomainError('NOT_FOUND', 'Ticket tier not found');
       }
-
-      assertSeatsAvailable(tier, quantity);
-
+      const reserved = await repository.reserveSeats(tier.id, quantity);
+      if (!reserved) {
+        throw new DomainError('SOLD_OUT', 'Not enough tickets available');
+      }
       const reference = newReference();
       const totalCents = tier.priceCents * quantity;
-
-      await repository.updateTier(tier.id, {
-        sold: tier.sold + quantity,
-      });
-
       const booking = {
         id: newId(),
         reference,

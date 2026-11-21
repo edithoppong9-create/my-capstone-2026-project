@@ -47,3 +47,30 @@
 **What I changed:** Added `docs/architecture.md`, `src/domain/bookingStateMachine.js`, `src/http/router.js`, `src/http/app.js`, `src/config.js`, `src/server.js`, `public/index.html`, and Build 3 tests. Updated `package.json` with the start script.
 
 **Verification:** `npm test` passed 36 tests. `npm start` served the health endpoint and static homepage. Manual checks confirmed malformed JSON returns 400, unknown API routes return 404, and an encoded path-traversal attempt is blocked with 403. `git diff --check` reported no whitespace errors.
+
+
+## Build 4 — REST API and booking services
+
+**What I asked:** I used AI guidance to build the REST API for the event ticketing system, connecting HTTP routes to services and the in-memory repository.
+
+**What came back:** Guidance for implementing API routes, event and booking services, mock payment processing, request validation, consistent error responses, and API-level tests.
+
+**What I changed:** Added and updated the HTTP routes, service and repository integration, mock payment gateway, API examples in `docs/api-examples.md`, and API-level tests.
+
+**Verification:** `npm test` passed 36 tests. I tested the API endpoints, including event creation, ticket-tier creation, publishing, event search, booking, mock payment, and cancellation of unpaid bookings. The API returned consistent error responses for invalid requests.
+
+**Final review:** Confirmed that the API worked with the in-memory repository and that the existing tests passed.
+
+## Build 5 — SQLite, persistence, and the overselling fix
+
+**What I asked:** I used AI guidance to migrate the ticketing system from in-memory storage to SQLite, reproduce the overselling problem, and fix it using an atomic database operation.
+
+**What came back:** Guidance for creating the SQLite schema, database connection, SQLite repository, seed script, overselling demonstration, and automated test. I also received guidance on using a conditional SQL UPDATE to reserve seats safely.
+
+**What I changed:** Added `src/db/schema.sql`, `src/db/connection.js`, `src/repositories/sqlite.js`, `scripts/seed.js`, `scripts/oversell-demo.js`, and `test/oversell.test.js`. Updated the booking service and memory repository to use the `reserveSeats` repository method. Updated `src/server.js` to use the SQLite repository.
+
+**Verification:** Before the fix, the overselling demonstration showed 50 successful bookings for one available ticket. After the fix, only one booking succeeded and 49 failed with `SOLD_OUT`. The automated overselling test passed. `npm test` passed all 37 tests.
+
+**Persistence check:** Started the API using SQLite, retrieved the seeded Accra Tech Conference event through the API, stopped and restarted the server, and retrieved the events again. The data remained available after the restart.
+
+**What I learned:** A JavaScript lock variable is not a reliable database-level protection mechanism, especially when multiple server processes are involved. Checking ticket availability twice is also unsafe because another request can book the ticket between the check and the update. The capacity check and ticket reservation must happen together in one atomic SQL statement.

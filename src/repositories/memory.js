@@ -22,8 +22,19 @@ export function createMemoryRepository() {
 
       const updated = { ...existing, ...copy(changes) };
       events.set(id, updated);
-      return copy(updated);
-    },
+    return copy(updated);
+  },
+  async reserveSeats(id, quantity) {
+      const existing = tiers.get(id);
+      if (!existing || existing.sold + quantity > existing.capacity) {
+        return false;
+      }
+            const updated = {
+              ...existing,
+              sold: existing.sold + quantity
+            }; tiers.set(id, updated);
+            return true;
+          },
 
     async listEvents() {
       return [...events.values()].map(copy);
