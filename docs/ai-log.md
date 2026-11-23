@@ -74,3 +74,17 @@
 **Persistence check:** Started the API using SQLite, retrieved the seeded Accra Tech Conference event through the API, stopped and restarted the server, and retrieved the events again. The data remained available after the restart.
 
 **What I learned:** A JavaScript lock variable is not a reliable database-level protection mechanism, especially when multiple server processes are involved. Checking ticket availability twice is also unsafe because another request can book the ticket between the check and the update. The capacity check and ticket reservation must happen together in one atomic SQL statement.
+
+## Build 6 — Frontend on Mock Data
+
+**What I asked:** I used AI guidance to build the frontend of my event ticketing application using HTML, CSS, and JavaScript, with mock data and a separate API module.
+
+**What came back:** Guidance and code for creating the event listing page, event details page, reusable DOM helper, mock event data, API functions, search and filtering controls, ticket booking, checkout countdown, and mock payment processing.
+
+**What I changed:** Added `public/event.html`, `public/css/styles.css`, `public/js/ui.js`, `public/js/mockData.js`, `public/js/api.js`, `public/js/pages/home.js`, and `public/js/pages/event.js`. Updated `public/index.html`.
+
+**Verification:** Tested the homepage in the browser. Event search, city filtering, maximum-price filtering, and sorting worked correctly. Confirmed that event details displayed, sold-out VIP tickets were marked and disabled, and General Admission tickets could be booked.
+
+**Booking and payment checks:** Successfully created a booking and displayed the booking summary and five-minute countdown. Tested a declined mock payment and confirmed that an error appeared and another attempt was allowed. Retried with the successful test card and received a payment confirmation with a booking reference.
+
+**What I learned:** I learned how the frontend uses JavaScript modules to separate responsibilities, how DOM elements can be created safely using `textContent` and DOM methods, and how an API module can keep data access separate from page logic. I also learned how forms, event listeners, and asynchronous functions support the booking and payment process.

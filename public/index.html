@@ -1,12 +1,100 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Event Ticketing API</title>
+  <meta name="description" content="Discover events and book your tickets easily.">
+  <title>Event Ticketing | Discover Events</title>
+  <link rel="stylesheet" href="./css/styles.css">
+  <script type="module" src="./js/pages/home.js"></script>
 </head>
 <body>
-  <h1>Event Ticketing API</h1>
-  <p>My Build 3 server is serving static files.</p>
+  <header class="site-header">
+    <div class="container header-content">
+      <a class="logo" href="./index.html">Evently</a>
+
+      <nav aria-label="Main navigation">
+        <a href="./index.html">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">Find your next experience</p>
+      <h1>Discover events worth attending.</h1>
+      <p>Explore upcoming events and find the perfect tickets for you.</p>
+    </section>
+
+    <section class="events-section" aria-labelledby="events-heading">
+      <div class="section-heading">
+        <div>
+          <h2 id="events-heading">Explore events</h2>
+          <p>Find an event that interests you.</p>
+        </div>
+        <p id="event-count" aria-live="polite">Loading events...</p>
+      </div>
+
+      <form id="filters-form" class="filters">
+        <div class="form-group">
+          <label for="search">Search events</label>
+          <input
+            type="search"
+            id="search"
+            name="search"
+            placeholder="Search by event or venue"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="city">Filter by city</label>
+          <select id="city" name="city">
+            <option value="">All cities</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="max-price">Maximum ticket price</label>
+          <input
+            type="number"
+            id="max-price"
+            name="max-price"
+            min="0"
+            step="1"
+            placeholder="Enter maximum price"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="sort">Sort events</label>
+          <select id="sort" name="sort">
+            <option value="date">Earliest date</option>
+            <option value="price">Lowest price</option>
+          </select>
+        </div>
+
+        <button type="reset" class="button button-secondary">
+          Clear filters
+        </button>
+      </form>
+
+      <div
+        id="events-list"
+        class="events-grid"
+        aria-live="polite"
+      >
+        <p>Loading events...</p>
+      </div>
+
+      <p id="error-message" class="error-message" role="alert"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Evently. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>

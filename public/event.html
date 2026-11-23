@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View event details and book your tickets.">
+  <title>Event Details | Evently</title>
+  <link rel="stylesheet" href="./css/styles.css">
+  <script type="module" src="./js/pages/event.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-content">
+      <a class="logo" href="./index.html">Evently</a>
+
+      <nav aria-label="Main navigation">
+        <a href="./index.html">Browse events</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container event-page">
+    <a class="back-link" href="./index.html">
+      &larr; Back to events
+    </a>
+
+    <section id="event-details" aria-live="polite">
+      <p>Loading event details...</p>
+    </section>
+
+    <section
+      id="booking-section"
+      class="booking-section"
+      aria-labelledby="booking-heading"
+      hidden
+    >
+      <h2 id="booking-heading">Choose your tickets</h2>
+
+      <form id="booking-form">
+        <div id="ticket-tiers"></div>
+
+        <div class="form-group">
+          <label for="quantity">Number of tickets</label>
+          <input
+            type="number"
+            id="quantity"
+            name="quantity"
+            min="1"
+            max="10"
+            value="1"
+            required
+          >
+          <p class="help-text">You can book between 1 and 10 tickets.</p>
+        </div>
+
+        <p id="booking-total" aria-live="polite"></p>
+
+        <button type="submit" id="book-button" class="button">
+          Book tickets
+        </button>
+
+        <p id="booking-message" role="alert"></p>
+      </form>
+    </section>
+
+    <section
+      id="checkout-section"
+      class="checkout-section"
+      aria-labelledby="checkout-heading"
+      hidden
+    >
+      <h2 id="checkout-heading">Complete your payment</h2>
+
+      <p id="booking-summary"></p>
+
+      <p>
+        Time remaining:
+        <strong id="countdown" aria-live="off">05:00</strong>
+      </p>
+
+      <form id="payment-form">
+        <div class="form-group">
+          <label for="card-name">Name on card</label>
+          <input
+            type="text"
+            id="card-name"
+            name="card-name"
+            autocomplete="cc-name"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="card-number">Mock card number</label>
+          <input
+            type="text"
+            id="card-number"
+            name="card-number"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="Enter 16 digits"
+            pattern="[0-9]{16}"
+            required
+          >
+        </div>
+
+        <p class="help-text">
+          This is a demonstration only. No real card details are processed.
+        </p>
+
+        <button type="submit" class="button">
+          Pay now
+        </button>
+
+        <p id="payment-message" role="alert"></p>
+      </form>
+    </section>
+
+    <p id="event-error" class="error-message" role="alert"></p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Evently. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
